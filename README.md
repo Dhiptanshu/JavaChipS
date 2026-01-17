@@ -14,21 +14,23 @@ The project is divided into three main components:
 
 Ensure the following tools are installed on your system:
 
-*   Python 3.8 or higher
-*   Flutter SDK (Latest Stable)
-*   Dart SDK
-*   Git
+- Python 3.8 or higher
+- Flutter SDK (Latest Stable)
+- Dart SDK
+- Git
 
 ## Backend Setup (Django)
 
 The backend powers the API and data management for the platform.
 
 1.  Navigate to the backend directory:
+
     ```bash
     cd fresh_corridor_backend
     ```
 
 2.  Create and activate a virtual environment (Optional but Recommended):
+
     ```bash
     python -m venv venv
     # Windows
@@ -38,11 +40,13 @@ The backend powers the API and data management for the platform.
     ```
 
 3.  Install dependencies:
+
     ```bash
     pip install django djangorestframework django-cors-headers requests python-dotenv
     ```
 
 4.  Configure environment variables:
+
     ```bash
     # Copy the template file
     cp .env.template .env
@@ -52,12 +56,14 @@ The backend powers the API and data management for the platform.
 
 5.  Initialize the database:
     Run the following commands to create the database schema and apply migrations.
+
     ```bash
     python manage.py makemigrations core
     python manage.py migrate
     ```
 
 6.  (Optional) Load real hospital data:
+
     ```bash
     python fetch_real_hospitals.py
     ```
@@ -71,7 +77,9 @@ The backend powers the API and data management for the platform.
 ## Features
 
 ### Urban Digital Twin with Traffic Monitoring
+
 The platform includes an interactive 3D urban digital twin powered by Cesium, with integrated real-time traffic congestion monitoring:
+
 - **3D City Visualization** - Interactive map of New Delhi with zone markers
 - **Real-time Traffic Monitoring** - Live traffic speed and congestion analysis powered by TomTom API
 - **Travel Time Calculations** - Compare current vs free-flow travel times
@@ -88,11 +96,13 @@ Traffic monitoring is located in the **Urban Nexus** tab below the digital twin 
 The mobile application provides a unified interface for all user personas.
 
 1.  Navigate to the mobile app directory:
+
     ```bash
     cd fresh_corridor_mobile
     ```
 
 2.  Install dependencies:
+
     ```bash
     flutter pub get
     ```
@@ -108,6 +118,7 @@ The mobile application provides a unified interface for all user personas.
 The web dashboard is a static client interacting with the backend API.
 
 1.  Navigate to the web directory:
+
     ```bash
     cd fresh_corridor_web
     ```
@@ -117,9 +128,9 @@ The web dashboard is a static client interacting with the backend API.
 
 ## Project Structure
 
-*   `fresh_corridor_backend/`: Django project root.
-    *   `core/`: Main application app containing Models, Views, and Serializers.
-*   `fresh_corridor_mobile/`: Flutter project root.
-    *   `lib/main.dart`: Application entry point and view logic.
-*   `fresh_corridor_web/`: Web dashboard resources.
-    *   `index.html`: Main dashboard entry point.
+- `fresh_corridor_backend/`: Django project root.
+  - `core/`: Main application app containing Models, Views, and Serializers.
+- `fresh_corridor_mobile/`: Flutter project root.
+  - `lib/main.dart`: Application entry point and view logic.
+- `fresh_corridor_web/`: Web dashboard resources.
+  - `index.html`: Main dashboard entry point.
