@@ -1,130 +1,97 @@
-# Fresh Corridor Nexus 🌆🌱🚑
+# Fresh Corridor Nexus - GeoAnushasan
 
-**A Data-Driven Scalable Urban System for Resilience, Health, and Logistics.**
+**A Next-Gen Smart City Digital Twin for Urban Resilience & Logistics.**
 
-Fresh Corridor Nexus is a Smart City Digital Twin platform designed to aid urban planners, municipal authorities, and citizens. It integrates real-time environmental data, hospital capacity tracking, and agri-logistics into a unified **3D Geospatial Dashboard**.
-
-## 🚀 Key Modules
-
-### 1. Urban Nexus (Planner View) 🏗️
-- **3D Digital Twin**: Visualizes city zones using **CesiumJS**.
-- **What-If Simulation Suite**: Simulates disaster scenarios (e.g., Heavy Rainfall, Traffic Spikes) to predict **Ambulance Delays** and **Flood Risks**.
-- **Real-Time Traffic Monitor**: Integrates **TomTom Traffic API** to show live congestion and road closures.
-- **Resilience Metrics**: Calculates composite resilience scores (0-100) based on AQI, Bed Availability, and Resource Access.
-
-### 2. Public Health Monitor 🏥
-- **Hospital Capacity Tracking**: Real-time visibility of **ICU & General Bed** occupancy.
-- **Health Desert Detection**: Identifies zones with high vulnerability and low medical access.
-- **Epidemiology Heatmap**: Correlates **AQI spikes** (from CPCB) with respiratory case surges.
-
-### 3. Agri-Supply Logistics 🚜
-- **Farm-to-City Tracking**: Logs incoming food supply from rural zones.
-- **Spoilage Risk AI**: Assigns risk scores to shipments based on travel time and environmental conditions.
-
-### 4. Citizen Connect 📱
-- **Safety Scores**: Personalized zone safety ratings.
-- **Issue Reporting**: Gamified interface for reporting Waste/Traffic issues.
+Fresh Corridor Nexus integrates real-time environmental data, hospital capacity tracking, and agri-supply chain logistics into a single, interactive 3D dashboard. It empowers urban planners with "What-If" simulations and provides citizens with transparent safety metrics.
 
 ---
 
-## 🛠️ Technology Stack
+## Features
 
-| Component | Tech |
-| :--- | :--- |
-| **Backend** | Django 5.0, Django REST Framework (DRF) |
-| **Database** | SQLite (Dev) / PostgreSQL (Prod ready) |
-| **Frontend** | HTML5, CSS3, Vanilla JS |
-| **Maps/3D** | **CesiumJS (1.113)** for Digital Twin |
-| **AI/ML** | Python Simulation Service, Gaussian Plume Model logic |
-| **External APIs** | **TomTom** (Traffic), **CPCB** (Air Quality) |
+*   **Urban Digital Twin**: High-fidelity 3D map (CesiumJS) with interactive City Zones.
+*   **What-If Simulations**: Test disaster scenarios (Floods, Traffic Spikes) and predict impacts on city infrastructure.
+*   **Real-Time Traffic**: Live congestion tracking with "FlyTo" navigation and notifications.
+*   **Health Monitor**: Live tracking of ICU bed availability and Air Quality (AQI) hotspots.
+*   **Agri-Logistics**: Farm-to-City supply chain visibility with AI-driven spoilage risk assessment.
 
 ---
 
-## 📡 Live Data Sources
+## Quick Start Guide
 
-1.  **CPCB (Central Pollution Control Board)**:
-    - The system fetches live pollutant data (PM2.5, NO2, SO2) from CPCB via `core.services.aqi_service`.
-    - **Endpoint**: `/api/get_stations`
-2.  **TomTom Traffic Integration**:
-    - Real-time flow segment data is fetched for congestion analysis.
-    - **Fallback**: If the API key is invalid/exhausted, the system gracefully switches to a **Simulation Mode** for demos.
+Follow these steps to get the system running locally.
 
----
+### 1. Prerequisites
+*   **Python 3.10+** installed.
+*   **Git** installed.
 
-## ⚙️ Installation & Setup
-
-### Prerequisites
-- Python 3.10+
-- Git
-
-### 1. Clone the Repository
+### 2. Setup Project
 ```bash
+# Clone the repository
 git clone <repository_url>
 cd fresh_corridor_backend
+
+# Create a virtual environment (Optional but Recommended)
+python -m venv venv
+# Windows:
+.\venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
 ```
 
-### 2. Install Dependencies
+### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
-*Note: Key dependencies include `django`, `djangorestframework`, `requests`, `python-dotenv`.*
 
-### 3. Environment Configuration
-Create a `.env` file in the root `fresh_corridor_backend/` folder:
+### 4. Configure Environment
+Create a `.env` file in the `fresh_corridor_backend` directory:
 ```ini
-TOMTOM_API_KEY=your_tomtom_api_key_here
+TOMTOM_API_KEY=your_tomtom_api_key
 DEBUG=True
 SECRET_KEY=your_secret_key
 ```
 
-### 4. Database Setup
-Apply migrations to set up the SQLite database.
+### 5. Initialize Database
 ```bash
+# Apply database migrations
 python manage.py migrate
-```
 
-### 5. Seed Initial Data
-Populate the database with sample City Zones, Hospitals, and Logs.
-```bash
-python seed_data.py
+# Seed initial demo data (Zones, Hospitals, Logs)
+python manage.py seed_data
 ```
+*Note: The `seed_data` command populates the database so you're not starting with a blank slate.*
 
-### 6. Run the Server
+### 6. Run Server
 ```bash
 python manage.py runserver
 ```
-Access the dashboard at: **http://127.0.0.1:8000/**
+The dashboard is now live at: **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
 
 ---
 
-## 🧪 Simulation Worker (Optional)
+## System Architecture
 
-To simulate dynamic changes (e.g., patient arrival, weather shifts) in the background:
-```bash
-python manage.py simulate_health
-```
-*This command runs an infinite loop updating stats every few seconds.*
+### Backend
+*   **Django 5.0**: Robust web framework.
+*   **Django REST Framework**: JSON APIs for all modules.
+*   **Services**:
+    *   `AQIService`: Fetches live pollution data from CPCB.
+    *   `SimulationService`: Handles logic for resilience metrics and disaster modeling.
 
----
-
-## 📂 Project Structure
-
-- **`core/`**: Main Django app.
-  - **`models.py`**: DB Schema (CityZone, Hospital, etc.).
-  - **`views.py`**: API Logic & Simulation Endpoints.
-  - **`services/`**: External integrations (`aqi_service.py`, `simulation_service.py`).
-  - **`templates/`**: Frontend HTML.
-  - **`static/`**: JS/CSS assets (Cesium logic in `app.js`).
-- **`app_new.js`**: *deprecated/merged into app.js*.
-- **`seed_data.py`**: Data population script.
+### Frontend
+*   **HTML/CSS/JS**: Lightweight, no-build setup.
+*   **CesiumJS**: 3D geospatial visualization.
+*   **Chart.js**: Statistical graphs.
 
 ---
 
-## ⚠️ Troubleshooting
+## Troubleshooting
 
-- **403 Forbidden on Traffic API**: The system will auto-switch to **Mock/Simulation Data** so you can still demonstrate features.
-- **Cesium Map Not Loading**: Ensure you have an active internet connection as CesiumJS is loaded via CDN.
+**Q: The Map is black or not loading?**
+*   **A:** Check your internet connection. CesiumJS requires online access to stream 3D terrain and imagery.
 
----
-
-*Verified for Hackathon Deployment.*
+**Q: How do I simulate real-time updates?**
+*   **A:** Run the health simulation worker in a separate terminal:
+    ```bash
+    python manage.py simulate_health
+    ```
