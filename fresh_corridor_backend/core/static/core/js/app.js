@@ -22,13 +22,15 @@ function initCesium() {
     });
 
     // Set View to New Delhi immediately
-    viewer.camera.setView({
-        destination: Cesium.Cartesian3.fromDegrees(77.2090, 28.6139, 20000), // Higher altitude
+    // Fly to New Delhi (Animation from app_new.js)
+    viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(77.2090, 28.6139, 20000),
         orientation: {
             heading: Cesium.Math.toRadians(0.0),
-            pitch: Cesium.Math.toRadians(-90.0), // Top down
+            pitch: Cesium.Math.toRadians(-90.0),
             roll: 0.0
-        }
+        },
+        duration: 3.0
     });
 
     // Add Zone Entities from API
@@ -631,6 +633,11 @@ function displayTrafficData(data, isAutoUpdate = false) {
     const traffic = data.traffic;
     const location = data.location;
 
+    // Feature from app_new.js: Notification
+    if (isAutoUpdate) {
+        showTrafficUpdateNotification();
+    }
+
     // Congestion score and level
     const congestionScore = traffic.congestionScore;
     const congestionLevel = getTrafficCongestionLevel(congestionScore);
@@ -756,6 +763,20 @@ function showTrafficError(message) {
     if (results) {
         results.style.display = 'none';
     }
+}
+
+// Feature from app_new.js
+function showTrafficUpdateNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'update-notification';
+    notification.innerHTML = '✨ Traffic data updated!';
+    document.body.appendChild(notification);
+
+    setTimeout(() => notification.classList.add('show'), 10);
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
 // Initialize traffic monitoring when page loads

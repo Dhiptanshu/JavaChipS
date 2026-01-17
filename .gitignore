@@ -3,6 +3,7 @@
 *.db
 CARBONCRED-main/
 SIH25222_114634_JavaChip$/
+fresh_corridor_backend/trash_issue_reporting.html
 
 # Python
 __pycache__/

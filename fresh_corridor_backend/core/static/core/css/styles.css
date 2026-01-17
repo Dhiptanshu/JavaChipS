@@ -352,8 +352,13 @@ td {
 
 /* Traffic Congestion Styles */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .btn-secondary {
@@ -377,8 +382,15 @@ td {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
 }
 
 /* Traffic congestion level colors */
@@ -396,4 +408,31 @@ td {
 
 .level-severe {
     background: linear-gradient(135deg, #991b1b, #7f1d1d) !important;
+}
+
+/* Update Notification Toast */
+.update-notification {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #0f172a;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    font-weight: 600;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.update-notification.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.hidden {
+    display: none !important;
 }
