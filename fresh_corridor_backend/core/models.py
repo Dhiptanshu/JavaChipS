@@ -7,6 +7,7 @@ class CityZone(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     risk_level = models.CharField(max_length=20, default='Low') # Low, Medium, High
+    average_income_tier = models.CharField(max_length=20, default='Medium') # Low, Medium, High
 
     def __str__(self):
         return self.name
@@ -18,6 +19,7 @@ class WeatherLog(models.Model):
     precipitation_mm = models.FloatField()
     wind_speed_kmh = models.FloatField()
     visibility_km = models.FloatField()
+    air_quality_index = models.IntegerField(default=50) # lower is better
 
     def __str__(self):
         return f"{self.zone.name} - {self.timestamp}"
@@ -46,6 +48,14 @@ class TrafficStats(models.Model):
 
     def __str__(self):
         return f"Traffic in {self.zone.name}"
+
+class HealthStats(models.Model):
+    zone = models.ForeignKey(CityZone, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    respiratory_cases_active = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return f"Health Stats {self.zone.name}"
 
 class AgriSupply(models.Model):
     crop_type = models.CharField(max_length=50)
