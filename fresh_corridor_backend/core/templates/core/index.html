@@ -13,6 +13,7 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -29,7 +30,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
             </svg>
-            FRESH CORRIDOR
+            GeoAnushashan
         </div>
         <div class="nav-tabs">
             <div id="btn-urban" class="nav-tab active" onclick="switchTab('urban', this)">Urban Nexus</div>
@@ -37,8 +38,51 @@
             <div id="btn-agri" class="nav-tab" onclick="switchTab('agri', this)">Agri-Logistics</div>
             <div id="btn-citizen" class="nav-tab" onclick="switchTab('citizen', this)">Citizen Connect</div>
         </div>
-        <div class="weather-widget">
-            <span>New Delhi</span> | <strong>28°C</strong>
+
+        <!-- Right Section: Weather + Profile -->
+        <div style="display: flex; align-items: center; gap: 2rem;">
+            <div class="weather-widget">
+                <span>New Delhi</span> | <strong>28°C</strong>
+            </div>
+
+            <div class="profile-section" onclick="toggleProfileDropdown()"
+                style="background: white; padding: 6px 16px; border-radius: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); gap: 12px; transition: transform 0.2s;">
+                <div class="profile-info">
+                    <span class="profile-name" id="user-display-name" style="color: var(--text-main);">{{
+                        user_name|default:"Planner" }}</span>
+                    <span class="profile-role" id="user-display-role" style="color: var(--text-muted);">{{
+                        user_role|default:"Admin" }}</span>
+                </div>
+                <div class="profile-photo"
+                    style="width: 42px; height: 42px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; border: 2px solid #e2e8f0; overflow: hidden;">
+                    <!-- Simple User SVG -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="color: #64748b;">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <!-- Dropdown -->
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <div class="dropdown-profile-header">
+                        <div class="dp-name">{{ user_name|default:"Planner" }}</div>
+                        <div class="dp-email">{{ user_email|default:"user@example.com" }}</div>
+                    </div>
+
+                    <div class="dropdown-profile-body">
+                        <div class="dp-item">
+                            <span class="dp-label">Status</span>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                        <div class="dp-item">
+                            <span class="dp-label">Aadhar</span>
+                            <span class="dp-value font-mono">{{ masked_aadhar|default:"xxxx xxxx xxxx xxxx" }}</span>
+                        </div>
+                    </div>
+
+                    <a href="#" onclick="handleLogout()"><span class="material-icons-sharp">logout</span> Logout</a>
+                </div>
+            </div>
         </div>
     </nav>
 

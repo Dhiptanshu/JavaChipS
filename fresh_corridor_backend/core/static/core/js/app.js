@@ -1208,3 +1208,122 @@ function getCongestionColor(congestion) {
     if (congestion < 75) return '#f97316'; // Dark orange
     return '#ef4444'; // Red
 }
+
+// --- UI / Profile Functions ---
+window.toggleProfileDropdown = function () {
+    const dropdown = document.getElementById('profile-dropdown');
+    if (dropdown) dropdown.classList.toggle('active');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const profileSection = document.querySelector('.profile-section');
+    const dropdown = document.getElementById('profile-dropdown');
+    if (profileSection && !profileSection.contains(e.target) && dropdown) {
+        dropdown.classList.remove('active');
+    }
+});
+
+window.handleLogout = function () {
+    if (confirm('Disconnect Neural Link?')) {
+        localStorage.removeItem('user_role');
+        localStorage.removeItem('user_token');
+        window.location.href = '/login/';
+    }
+}
+
+// --- Generic Toast Notification ---
+window.showToast = function (message, type = 'info') {
+    // Create element if not exists (or append new one)
+    const toast = document.createElement('div');
+    toast.className = `custom-toast ${type}`;
+
+    let icon = 'info';
+    if (type === 'success') icon = 'check_circle';
+    if (type === 'error') icon = 'error_outline';
+
+    toast.innerHTML = `
+        <span class="material-icons-sharp" style="font-size: 1.5rem;">${icon}</span>
+        <div>${message}</div>
+    `;
+
+    document.body.appendChild(toast);
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+
+    // Remove after 3s
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 500);
+    }, 3500);
+}
+
+// Update Profile Info on Load
+document.addEventListener('DOMContentLoaded', async () => {
+    const displayName = document.getElementById('user-display-name');
+    const displayRole = document.getElementById('user-display-role');
+    const dropdown = document.getElementById('profile-dropdown');
+
+    // Initial localstorage fail-safe
+    const cachedRole = localStorage.getItem('user_role');
+    if (displayName && cachedRole) {
+        const roleMap = {
+            'PLANNER': 'City Planner',
+            'AGRICULTURIST': 'Agriculturist',
+            'HEALTH': 'Health Official',
+            'CITIZEN': 'Citizen'
+        };
+        displayRole.textContent = roleMap[cachedRole] || cachedRole;
+    }
+
+    // Fetch real details
+    try {
+        const res = await fetch('/api/auth/me/');
+        if (res.ok) {
+            const user = await res.json();
+
+            // Update Top Bar
+            if (displayName) displayName.textContent = user.username.split(' ')[0] || user.username;
+
+            const roleMap = {
+                'PLANNER': 'City Planner',
+                'AGRICULTURIST': 'Agriculturist',
+                'HEALTH': 'Health Official',
+                'CITIZEN': 'Citizen'
+            };
+            if (displayRole) displayRole.textContent = roleMap[user.role] || user.role;
+
+            // Updated Dropdown Content
+            if (dropdown) {
+                // Keep logout, prepend info
+                const logoutHtml = `<a href="#" onclick="handleLogout()"><span class="material-icons-sharp">logout</span> Logout</a>`;
+
+                // Construct Profile Card HTML
+                const profileHtml = `
+                    <div class="dropdown-profile-header">
+                        <div class="dp-name">${user.username}</div>
+                        <div class="dp-email">${user.email}</div>
+                    </div>
+                    <div class="dropdown-profile-body">
+                         <div class="dp-item">
+                            <span class="dp-label">Role</span>
+                            <span class="dp-value">${roleMap[user.role] || user.role}</span>
+                        </div>
+                        <div class="dp-item">
+                            <span class="dp-label">Aadhar</span>
+                            <span class="dp-value font-mono">${user.aadhar_last4 || 'Not Linked'}</span>
+                        </div>
+                    </div>
+                    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 0.5rem 0;">
+                `;
+
+                dropdown.innerHTML = profileHtml + logoutHtml;
+            }
+        }
+    } catch (e) {
+        console.error("Failed to load profile", e);
+    }
+});

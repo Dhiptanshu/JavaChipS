@@ -332,3 +332,42 @@ button:hover {
         padding: 2rem;
     }
 }
+
+/* Custom Toast for Login */
+.custom-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(15, 23, 42, 0.9);
+    /* Darker for login */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 9999;
+    max-width: 350px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.custom-toast.show {
+    transform: translateX(0);
+}
+
+.custom-toast.success {
+    border-left: 4px solid #10b981;
+}
+
+.custom-toast.error {
+    border-left: 4px solid #ef4444;
+}
+
+.custom-toast.info {
+    border-left: 4px solid #3b82f6;
+}

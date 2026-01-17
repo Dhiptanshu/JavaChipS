@@ -23,7 +23,32 @@ load_dotenv()
 
 # --- Dashboard View ---
 def dashboard(request):
-    return render(request, 'core/index.html')
+    context = {}
+    if request.user.is_authenticated:
+        try:
+            profile = request.user.profile
+            role = profile.get_role_display()
+            aadhar = profile.aadhar_number if profile.aadhar_number else ""
+            masked_aadhar = f"xxxx xxxx xxxx {aadhar[-4:]}" if len(aadhar) >= 4 else aadhar
+        except Exception:
+            role = "User"
+            masked_aadhar = "xxxx xxxx xxxx xxxx"
+
+        context = {
+            'user_name': request.user.username,
+            'user_email': request.user.email,
+            'user_role': role,
+            'masked_aadhar': masked_aadhar
+        }
+    else:
+        # Default/Guest context
+        context = {
+            'user_name': 'Guest',
+            'user_role': 'Visitor',
+            'user_email': '',
+            'masked_aadhar': ''
+        }
+    return render(request, 'core/index.html', context)
 
 def login_index(request):
     return render(request, 'core/login/index.html')
@@ -118,6 +143,32 @@ class PlannerViewSet(viewsets.ModelViewSet):
         modifiers = request.data
         result = SimulationService.run_what_if_simulation(pk, modifiers)
         return Response(result)
+
+@api_view(['GET'])
+@permission_classes([AllowAny]) 
+def get_user_profile(request):
+    if not request.user.is_authenticated:
+        return Response({"error": "Not authenticated"}, status=401)
+    
+    try:
+        profile = request.user.profile
+        aadhar = profile.aadhar_number if profile.aadhar_number else ""
+        masked_aadhar = f"xxxx xxxx xxxx {aadhar[-4:]}" if len(aadhar) >= 4 else aadhar
+        
+        return Response({
+            "username": request.user.username,
+            "email": request.user.email,
+            "role": profile.get_role_display(),
+            "aadhar_last4": masked_aadhar
+        })
+    except Exception as e:
+        # Fallback if profile missing
+        return Response({
+            "username": request.user.username, 
+            "email": request.user.email, 
+            "role": "CITIZEN", 
+            "aadhar_last4": ""
+        })
 
 # --- Tab 2: Health View ---
 class HealthViewSet(viewsets.ModelViewSet):

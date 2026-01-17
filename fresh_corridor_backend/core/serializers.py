@@ -62,19 +62,24 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
 class SignupSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(write_only=True)
+    role = serializers.ChoiceField(choices=UserProfile.ROLE_CHOICES)
+    aadhar_number = serializers.CharField(max_length=12, required=False, allow_blank=True)
     password = serializers.CharField(write_only=True)
     email = serializers.EmailField(required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'role']
-
+        fields = ['username', 'email', 'password', 'role', 'aadhar_number']
+        extra_kwargs = {'password': {'write_only': True}}
+    
     def create(self, validated_data):
         role = validated_data.pop('role')
+        aadhar_number = validated_data.pop('aadhar_number', None)
         password = validated_data.pop('password')
-        user = User.objects.create_user(**validated_data) # create_user handles hashing
+        
+        user = User.objects.create_user(**validated_data)
         user.set_password(password)
         user.save()
-        UserProfile.objects.create(user=user, role=role)
+        
+        UserProfile.objects.create(user=user, role=role, aadhar_number=aadhar_number)
         return user
