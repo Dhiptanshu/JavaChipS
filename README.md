@@ -1,136 +1,101 @@
-# Fresh Corridor Initiative
+# Fresh Corridor Nexus - GeoAnushasan
 
-The Fresh Corridor Initiative is a data-driven urban systems platform designed to optimize city logistics, reduce food waste, and improve public health outcomes. This repository contains the source code for the unified digital platform, comprising a Django backend, a Flutter mobile application, and a web dashboard.
+**A Next-Gen Smart City Digital Twin for Urban Resilience & Logistics.**
 
-## System Architecture
+Fresh Corridor Nexus integrates real-time environmental data, hospital capacity tracking, and agri-supply chain logistics into a single, interactive 3D dashboard. It empowers urban planners with "What-If" simulations and provides citizens with transparent safety metrics.
 
-The project is divided into three main components:
-
-1.  **Backend**: A Python Django Application handling APIs, database interactions, and simulation logic.
-2.  **Mobile Application**: A Flutter-based cross-platform app for Farmers, Citizens, Health Officials, and Planners.
-3.  **Web Dashboard**: A web interface for visualization and monitoring.
-
-## Prerequisites
-
-Ensure the following tools are installed on your system:
-
-- Python 3.8 or higher
-- Flutter SDK (Latest Stable)
-- Dart SDK
-- Git
-
-## Backend Setup (Django)
-
-The backend powers the API and data management for the platform.
-
-1.  Navigate to the backend directory:
-
-    ```bash
-    cd fresh_corridor_backend
-    ```
-
-2.  Create and activate a virtual environment (Optional but Recommended):
-
-    ```bash
-    python -m venv venv
-    # Windows
-    venv\Scripts\activate
-    # macOS/Linux
-    source venv/bin/activate
-    ```
-
-3.  Install dependencies:
-
-    ```bash
-    pip install django djangorestframework django-cors-headers requests python-dotenv
-    ```
-
-4.  Configure environment variables:
-
-    ```bash
-    # Copy the template file
-    cp .env.template .env
-    # Edit .env and add your TomTom API key (for traffic monitoring)
-    # Get a free key at: https://developer.tomtom.com/
-    ```
-
-5.  Initialize the database:
-    Run the following commands to create the database schema and apply migrations.
-
-    ```bash
-    python manage.py makemigrations core
-    python manage.py migrate
-    ```
-
-6.  (Optional) Load real hospital data:
-
-    ```bash
-    python fetch_real_hospitals.py
-    ```
-
-7.  Run the development server:
-    ```bash
-    python manage.py runserver
-    ```
-    The API will be available at `http://127.0.0.1:8000/`.
+---
 
 ## Features
 
-### Urban Digital Twin with Traffic Monitoring
+*   **Urban Digital Twin**: High-fidelity 3D map (CesiumJS) with interactive City Zones.
+*   **What-If Simulations**: Test disaster scenarios (Floods, Traffic Spikes) and predict impacts on city infrastructure.
+*   **Real-Time Traffic**: Live congestion tracking with "FlyTo" navigation and notifications.
+*   **Health Monitor**: Live tracking of ICU bed availability and Air Quality (AQI) hotspots.
+*   **Agri-Logistics**: Farm-to-City supply chain visibility with AI-driven spoilage risk assessment.
 
-The platform includes an interactive 3D urban digital twin powered by Cesium, with integrated real-time traffic congestion monitoring:
+---
 
-- **3D City Visualization** - Interactive map of New Delhi with zone markers
-- **Real-time Traffic Monitoring** - Live traffic speed and congestion analysis powered by TomTom API
-- **Travel Time Calculations** - Compare current vs free-flow travel times
-- **Road Closure Detection** - Instant alerts for blocked roads
-- **Auto-Refresh Monitoring** - Automatic updates when traffic conditions change
-- **Congestion Scoring** - Visual indicators for Low, Moderate, High, and Severe congestion
-- **Historical Data Storage** - All traffic data saved for analysis
+## Tech Stack
 
-Access the integrated dashboard at: `http://127.0.0.1:8000/`  
-Traffic monitoring is located in the **Urban Nexus** tab below the digital twin map.
+*   **Backend**: Django 5.0, Django REST Framework (DRF)
+*   **Frontend**: HTML5, Vanilla JavaScript, CSS3
+*   **Geospatial**: CesiumJS (1.113)
+*   **Data Sources**: Central Pollution Control Board (CPCB), TomTom Traffic API
 
-## Mobile Application Setup (Flutter)
+---
 
-The mobile application provides a unified interface for all user personas.
+## Quick Start Guide
 
-1.  Navigate to the mobile app directory:
+Follow these steps to get the system running locally.
 
-    ```bash
-    cd fresh_corridor_mobile
-    ```
+### 1. Prerequisites
+*   Python 3.10+ installed.
+*   Git installed.
 
-2.  Install dependencies:
+### 2. Setup Project
+```bash
+# Clone the repository
+git clone <repository_url>
+cd fresh_corridor_backend
 
-    ```bash
-    flutter pub get
-    ```
+# Create a virtual environment
+python -m venv venv
+# Windows:
+.\venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
+```
 
-3.  Run the application:
-    Ensure a simulator or physical device is connected.
-    ```bash
-    flutter run
-    ```
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-## Web Dashboard Setup
+### 4. Configure Environment Variables
+Create a `.env` file in the `fresh_corridor_backend` directory (example below):
+```ini
+TOMTOM_API_KEY=your_tomtom_api_key
+DEBUG=True
+SECRET_KEY=your_django_secret_key
+```
 
-The web dashboard is a static client interacting with the backend API.
+### 5. Initialize Database
+```bash
+# Apply migrations
+python manage.py migrate
 
-1.  Navigate to the web directory:
+# Seed data (Required for demo visuals)
+python seed_data.py
+```
 
-    ```bash
-    cd fresh_corridor_web
-    ```
+### 6. Run Server
+```bash
+# Start the Django server
+python manage.py runserver
+```
+The dashboard is now live at: **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
 
-2.  Open the dashboard:
-    Open `index.html` in any modern web browser.
+---
 
-## Project Structure
 
-- `fresh_corridor_backend/`: Django project root.
-  - `core/`: Main application app containing Models, Views, and Serializers.
-- `fresh_corridor_mobile/`: Flutter project root.
-  - `lib/main.dart`: Application entry point and view logic.
-- `fresh_corridor_web/`: Web dashboard resources.
-  - `index.html`: Main dashboard entry point.
+## Error Handling
+
+*   **Map Rendering**: If the map is black, ensure you have an active internet connection as CesiumJS streams global data.
+*   **Traffic Data**: If the TomTom API returns an error or rate-limit, the system automatically falls back to **Simulation Mode** to ensure the UI remains interactive.
+*   **Database**: If zones do not appear, ensure `seed_data.py` was executed successfully.
+
+---
+
+## Security Declaration
+
+This repository contains **no hardcoded secrets**. All sensitive configurations (API keys, Secret keys) are managed via a `.env` file which is explicitly ignored by the `.gitignore` policy.
+
+---
+
+## Background Worker
+
+To simulate real-time updates for health and environmental metrics during a demo:
+```bash
+python manage.py simulate_health
+```
