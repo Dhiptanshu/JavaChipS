@@ -182,12 +182,8 @@ function switchTab(tabId, el) {
         if (btn) btn.classList.add('active');
     }
 
-    // Toggle Cyber Theme
-    if (tabId === 'urban' || tabId === 'health' || tabId === 'agri') {
-        document.body.classList.add('cyber-theme');
-    } else {
-        document.body.classList.remove('cyber-theme');
-    }
+    // Toggle Cyber Theme (Always Active)
+    document.body.classList.add('cyber-theme');
 
     if (healthInterval) {
         clearInterval(healthInterval);
@@ -404,13 +400,14 @@ async function loadHealthData() {
             icu += h.occupied_beds_icu; icuT += h.total_beds_icu;
             gen += h.occupied_beds_general; genT += h.total_beds_general;
             oxy += h.oxygen_supply_level;
-            hHtml += `<tr>
-                <td><strong>${h.name}</strong><div style="font-size:0.75em;color:#666;">${h.zone_name}</div></td>
-                <td><span style="font-size:0.85em;">${h.zone_name}</span></td>
-                <td><div style="width:80px; background:#e2e8f0; border-radius:4px; height:8px; overflow:hidden;">
-                        <div style="width:${(h.occupied_beds_icu / h.total_beds_icu) * 100}%; background:${h.occupied_beds_icu / h.total_beds_icu > 0.8 ? '#ef4444' : '#22c55e'}; height:100%;"></div>
-                    </div><small>${h.occupied_beds_icu}/${h.total_beds_icu}</small></td>
-                <td><span class="badge ${h.occupied_beds_icu / h.total_beds_icu > 0.8 ? 'bg-danger' : 'bg-success'}">${h.occupied_beds_icu / h.total_beds_icu > 0.8 ? 'CRITICAL' : 'STABLE'}</span></td>
+            const icuUsage = h.total_beds_icu > 0 ? (h.occupied_beds_icu / h.total_beds_icu) : 0;
+            hHtml += `<tr style="border-bottom: 1px solid var(--card-border);">
+                <td style="padding:12px;"><strong style="color:var(--text-main);">${h.name}</strong><div style="font-size:0.75em;color:var(--text-muted);">${h.zone_name}</div></td>
+                <td style="padding:12px;"><span style="font-size:0.85em; color:var(--text-main);">${h.zone_name}</span></td>
+                <td style="padding:12px;"><div style="width:80px; background:rgba(255,255,255,0.1); border-radius:4px; height:8px; overflow:hidden;">
+                        <div style="width:${icuUsage * 100}%; background:${icuUsage > 0.8 ? '#ef4444' : '#22c55e'}; height:100%;"></div>
+                    </div><small style="color:var(--text-muted);">${h.occupied_beds_icu}/${h.total_beds_icu}</small></td>
+                <td style="padding:12px;"><span class="badge ${icuUsage > 0.8 ? 'bg-danger' : 'bg-success'}">${icuUsage > 0.8 ? 'CRITICAL' : 'STABLE'}</span></td>
             </tr>`;
         });
         document.getElementById('hospital-table').innerHTML = hHtml;
@@ -434,14 +431,14 @@ async function loadHealthData() {
                 const clickAttr = e.name ? `onclick="openStationModal('${e.name}')" style="cursor:pointer;"` : '';
 
                 return `
-                <div style="padding:0.8rem; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;" ${clickAttr}>
+                <div style="padding:0.8rem; border-bottom:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center;" ${clickAttr}>
                     <div>
-                        <div style="font-weight:600; color:#334155;">${name}</div>
-                        <span class="badge" style="background:#e2e8f0; color:#475569; font-weight:500;">${e.city || e.area_type || 'Station'}</span>
+                        <div style="font-weight:600; color:var(--text-main);">${name}</div>
+                        <span class="badge" style="background:rgba(255,255,255,0.1); color:var(--text-muted); font-weight:500;">${e.city || e.area_type || 'Station'}</span>
                     </div>
                     <div style="text-align:right;">
                         <div style="font-size:1.1rem; font-weight:700; color:${getColorForAQI(aqi)}">${aqi} AQI</div>
-                        <div style="font-size:0.8rem; color:#64748b;">${e.live_ts ? new Date(e.live_ts).toLocaleTimeString() : 'Simulated'}</div>
+                        <div style="font-size:0.8rem; color:var(--text-muted);">${e.live_ts ? new Date(e.live_ts).toLocaleTimeString() : 'Simulated'}</div>
                     </div>
                 </div>`;
             }).join('');
@@ -450,8 +447,8 @@ async function loadHealthData() {
         // Render Deserts
         const dElem = document.getElementById('desert-alerts');
         if (deserts.length === 0) dElem.innerHTML = '<div style="padding:1rem;color:green;">No Health Deserts</div>';
-        else dElem.innerHTML = deserts.map(d => `<div style="padding:0.8rem; background:#fff1f2; margin-bottom:0.5rem; border-left:3px solid red;">
-            <strong>Health Desert: ${d.name}</strong><br><small>High Vulnerability Zone</small></div>`).join('');
+        else dElem.innerHTML = deserts.map(d => `<div style="padding:0.8rem; background:rgba(239, 68, 68, 0.1); margin-bottom:0.5rem; border-left:3px solid #ef4444; border-radius: 4px;">
+            <strong style="color:var(--text-main);">Health Desert: ${d.name}</strong><br><small style="color:var(--text-muted);">High Vulnerability Zone</small></div>`).join('');
     } catch (e) { console.error("Health Data Error", e); }
 }
 
@@ -541,10 +538,10 @@ async function loadCitizenData() {
         const cElem = document.getElementById('citizen-reports');
         if (reports.length === 0) cElem.innerHTML = '<div style="padding:1rem;color:#666;">No recent reports in your area.</div>';
         else cElem.innerHTML = reports.map(r => `
-            <div style="padding:0.8rem; border-bottom:1px solid #eee;">
+            <div style="padding:0.8rem; border-bottom:1px solid var(--card-border);">
                 <span class="badge bg-warning">${r.report_type}</span>
-                <div style="margin-top:0.4rem; font-weight:500;">${r.description}</div>
-                <div style="font-size:0.8rem; color:#888;">${new Date(r.timestamp).toLocaleDateString()} • ${r.zone_name}</div>
+                <div style="margin-top:0.4rem; font-weight:500; color:var(--text-main);">${r.description}</div>
+                <div style="font-size:0.8rem; color:var(--text-muted);">${new Date(r.timestamp).toLocaleDateString()} • ${r.zone_name}</div>
             </div>
         `).join('');
     } catch (e) { console.error(e); }
@@ -614,14 +611,14 @@ async function loadAQIHotspots(containerId = 'aqi-hotspots-list') {
 
             // EXACT MATCH with Health Monitor HTML
             return `
-            <div style="padding:0.8rem; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; ${cursorStyle}" ${clickAttr}>
+            <div style="padding:0.8rem; border-bottom:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center; ${cursorStyle}" ${clickAttr}>
                 <div>
-                    <div style="font-weight:600; color:#334155;">${name}</div>
-                    <span class="badge" style="background:#e2e8f0; color:#475569; font-weight:500;">${location}</span>
+                    <div style="font-weight:600; color:var(--text-main);">${name}</div>
+                    <span class="badge" style="background:rgba(255,255,255,0.1); color:var(--text-muted); font-weight:500;">${location}</span>
                 </div>
                 <div style="text-align:right;">
                     <div style="font-size:1.1rem; font-weight:700; color:${getColorForAQI(val)}">${val} AQI</div>
-                    <div style="font-size:0.8rem; color:#64748b;">${timeStr}</div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">${timeStr}</div>
                 </div>
             </div>`;
         }).join('');
@@ -1432,7 +1429,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (res.ok) {
             const user = await res.json();
 
-            // Update Top Bar
+            // Update Top Bar (Visible Outside Below Logo)
+            const outName = document.getElementById('user-display-name-out');
+            const outEmail = document.getElementById('user-display-email-out');
+            const outAadhar = document.getElementById('user-display-aadhar-out');
+
+            if (outName) outName.textContent = user.username;
+            if (outEmail) outEmail.textContent = user.email;
+            if (outAadhar) outAadhar.textContent = user.aadhar_last4 || '**** **** ****';
+
             if (displayName) displayName.textContent = user.username.split(' ')[0] || user.username;
 
             const roleMap = {
@@ -1461,7 +1466,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                         <div class="dp-item">
                             <span class="dp-label">Aadhar</span>
-                            <span class="dp-value font-mono">${user.aadhar_last4 || 'Not Linked'}</span>
+                            <span class="dp-value font-mono">${user.aadhar_last4 || '**** **** ****'}</span>
                         </div>
                     </div>
                     <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 0.5rem 0;">
@@ -1741,14 +1746,14 @@ async function fetchCitizenTrafficData() {
             }
 
             detailsDiv.innerHTML = `
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-top:0.5rem; font-size:0.9rem; text-align:left;">
-                    <div>Speed: <b>${data.traffic.currentSpeed} km/h</b></div>
-                    <div>Travel Time: <b>${Math.round(data.traffic.currentTravelTime / 60)} min</b></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-top:0.5rem; font-size:0.9rem; text-align:left; color:var(--text-main);">
+                    <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:4px;">Speed: <b style="color:var(--primary-color);">${data.traffic.currentSpeed} km/h</b></div>
+                    <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:4px;">Travel Time: <b style="color:var(--primary-color);">${Math.round(data.traffic.currentTravelTime / 60)} min</b></div>
                 </div>
             `;
         } else {
             statusDiv.innerText = "Error: " + (data.message || "Unknown");
-            statusDiv.style.color = 'red';
+            statusDiv.style.color = '#ef4444';
         }
     } catch (e) {
         console.error("Fetch Traffic Error:", e);

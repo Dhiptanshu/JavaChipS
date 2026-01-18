@@ -29,10 +29,10 @@ def dashboard(request):
             profile = request.user.profile
             role = profile.get_role_display()
             aadhar = profile.aadhar_number if profile.aadhar_number else ""
-            masked_aadhar = f"xxxx xxxx xxxx {aadhar[-4:]}" if len(aadhar) >= 4 else aadhar
+            masked_aadhar = f"**** **** {aadhar[-4:]}" if len(aadhar) >= 4 else "Not Linked"
         except Exception:
             role = "User"
-            masked_aadhar = "xxxx xxxx xxxx xxxx"
+            masked_aadhar = "**** **** ****"
 
         context = {
             'user_name': request.user.username,
@@ -153,7 +153,7 @@ def get_user_profile(request):
     try:
         profile = request.user.profile
         aadhar = profile.aadhar_number if profile.aadhar_number else ""
-        masked_aadhar = f"xxxx xxxx xxxx {aadhar[-4:]}" if len(aadhar) >= 4 else aadhar
+        masked_aadhar = f"**** **** {aadhar[-4:]}" if len(aadhar) >= 4 else "Not Linked"
         
         return Response({
             "username": request.user.username,

@@ -1,34 +1,5 @@
 :root {
-    /* --- ORIGINAL LIGHT THEME (Agri & Citizen) --- */
-    --bg-color: #f1f5f9;
-    --card-bg: #ffffff;
-    --card-border: #e2e8f0;
-
-    --primary-color: #0d9488;
-    /* Teal */
-    --secondary-color: #64748b;
-    /* Slate */
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-
-    --success-color: #10b981;
-    --warning-color: #f59e0b;
-    --danger-color: #ef4444;
-
-    --font-head: 'Inter', sans-serif;
-    --font-body: 'Inter', sans-serif;
-
-    --nav-bg: #ffffff;
-    --nav-border: #e2e8f0;
-    --nav-active-bg: #0d9488;
-    --nav-active-text: #ffffff;
-
-    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --btn-gradient: linear-gradient(135deg, #0d9488, #0f766e);
-}
-
-/* --- CYBER THEME (Urban & Health - "My Best") --- */
-body.cyber-theme {
+    /* --- UNIFIED CYBER THEME (DEFAULT) --- */
     --bg-color: #030407;
     /* Deep Void */
     --card-bg: rgba(20, 20, 35, 0.6);
@@ -50,11 +21,11 @@ body.cyber-theme {
 
     --nav-bg: rgba(5, 5, 10, 0.8);
     --nav-border: rgba(0, 243, 255, 0.1);
-    --nav-active-bg: linear-gradient(90deg, #00f3ff, #bc13fe);
+    --nav-active-bg: linear-gradient(90deg, #84e9ee, #c788df);
     --nav-active-text: #000;
 
     --shadow-soft: 0 0 20px rgba(0, 243, 255, 0.15);
-    --btn-gradient: linear-gradient(90deg, #00f3ff, #bc13fe);
+    --btn-gradient: linear-gradient(90deg, #84e9ee, #c788df);
 }
 
 * {
@@ -71,8 +42,8 @@ body {
     transition: background 0.5s ease, color 0.5s ease;
 }
 
-/* Background Grids only for Cyber Theme */
-body.cyber-theme .bg-grid-animation {
+/* Background Grids - Global */
+.bg-grid-animation {
     opacity: 0.4;
     display: block;
     background-image:
@@ -80,17 +51,9 @@ body.cyber-theme .bg-grid-animation {
         linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
 }
 
-body:not(.cyber-theme) .bg-grid-animation {
-    display: none;
-}
-
-body.cyber-theme .glow-orb {
+.glow-orb {
     background: radial-gradient(circle, rgba(188, 19, 254, 0.15) 0%, transparent 70%);
     display: block;
-}
-
-body:not(.cyber-theme) .glow-orb {
-    display: none;
 }
 
 @keyframes ombreFlow {
@@ -201,7 +164,7 @@ body:not(.cyber-theme) .glow-orb {
 }
 
 /* Cyber Hover Override */
-body.cyber-theme .nav-tab:hover {
+.nav-tab:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
     box-shadow: 0 0 10px var(--primary-color);
@@ -240,7 +203,7 @@ h2 {
 }
 
 /* Cyber Headers with Gradient */
-body.cyber-theme h2 {
+h2 {
     background: linear-gradient(90deg, #fff, #94a3b8);
     -webkit-background-clip: text;
     background-clip: text;
@@ -290,7 +253,7 @@ body.cyber-theme h2 {
 }
 
 /* Cyber Card Effects */
-body.cyber-theme .card:hover {
+.card:hover {
     box-shadow: 0 0 20px rgba(188, 19, 254, 0.2);
     border-color: var(--secondary-color);
 }
@@ -317,7 +280,7 @@ body.cyber-theme .card:hover {
     color: var(--text-main);
 }
 
-body.cyber-theme .stat-value {
+.stat-value {
     color: #fff;
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
@@ -485,13 +448,13 @@ tr:hover td {
 }
 
 /* Cyber Theme Specific Simulation Card */
-body.cyber-theme .simulation-overlay {
+.simulation-overlay {
     background: rgba(10, 10, 16, 0.95);
     border: 1px solid rgba(0, 243, 255, 0.3);
     box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
 }
 
-body.cyber-theme .simulation-overlay h3 {
+.simulation-overlay h3 {
     color: #fff !important;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -500,7 +463,7 @@ body.cyber-theme .simulation-overlay h3 {
     margin-bottom: 20px;
 }
 
-body.cyber-theme .simulation-overlay label {
+.simulation-overlay label {
     color: var(--text-muted);
 }
 
@@ -553,14 +516,14 @@ body.cyber-theme .simulation-overlay label {
 }
 
 /* Cyber Select Styling */
-body.cyber-theme .simulation-overlay select {
+.simulation-overlay select {
     background-color: #1a1a2e;
     border: 2px solid #2d2d44;
     color: #fff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-body.cyber-theme .simulation-overlay select:hover {
+.simulation-overlay select:hover {
     border-color: var(--primary-color);
     box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
 }
@@ -572,7 +535,7 @@ body.cyber-theme .simulation-overlay select:hover {
     transform: translateY(-2px);
 }
 
-body.cyber-theme .simulation-overlay option {
+.simulation-overlay option {
     background-color: #1a1a2e;
     color: #fff;
 }
@@ -761,19 +724,172 @@ body.cyber-theme .simulation-overlay option {
 }
 
 /* Cyber Theme Overrides for Control Center Tabs */
-body.cyber-theme .uc-tab {
+.uc-tab {
     color: rgba(255, 255, 255, 0.5);
 }
 
-body.cyber-theme .uc-tab:hover {
+.uc-tab:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
 }
 
-body.cyber-theme .uc-tab.active {
+.uc-tab.active {
     color: #fff;
     border-bottom-color: var(--primary-color);
     background: rgba(255, 255, 255, 0.1);
     text-shadow: 0 0 10px var(--primary-color);
     box-shadow: inset 0 -10px 20px -10px rgba(0, 243, 255, 0.2);
+}
+
+/* Profile Dropdown - Dark Cyber Theme */
+.profile-dropdown {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 300px;
+    background: #030407;
+    /* Dark Void */
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    color: #fff;
+    backdrop-filter: blur(10px);
+}
+
+.profile-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-profile-header {
+    margin-bottom: 1.2rem;
+}
+
+.dp-name {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #fff;
+    margin-bottom: 0.2rem;
+}
+
+.dp-email {
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.dropdown-profile-body {
+    margin-bottom: 1rem;
+}
+
+.dp-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+}
+
+.dp-label {
+    color: #94a3b8;
+    /* Slate */
+    font-weight: 500;
+}
+
+.dp-value {
+    color: #e2e8f0;
+    /* Light Slate */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.dp-value.font-mono {
+    font-family: monospace;
+}
+
+.profile-dropdown .badge {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #10b981 !important;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.profile-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #d8b4fe;
+    /* Light Purple */
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    transition: color 0.2s;
+}
+
+.profile-dropdown a:hover {
+    color: #c084fc;
+}
+
+/* Urban Control Center Overrides */
+.urban-control-center h4 {
+    color: var(--text-main);
+    font-family: var(--font-head);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+.sim-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.sim-card label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.mini-list {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.form-select {
+    background: #1a1b2e;
+    color: var(--text-main);
+    border: 1px solid var(--card-border);
+    padding: 0.5rem;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.slider {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.sim-result {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(124, 229, 234, 0.1);
+    border-left: 3px solid var(--primary-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--text-main);
 }
