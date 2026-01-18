@@ -2,6 +2,8 @@
 
 **A Next-Gen Smart City Digital Twin for Urban Resilience & Logistics.**
 
+Deployed on AWS - http://13.200.201.169/
+
 Fresh Corridor Nexus integrates real-time environmental data, hospital capacity tracking, and agri-supply chain logistics into a single, interactive 3D dashboard. It empowers urban planners with "What-If" simulations and provides citizens with transparent safety metrics.
 
 ---
