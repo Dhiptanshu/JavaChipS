@@ -550,7 +550,7 @@ async function loadCitizenData() {
     } catch (e) { console.error(e); }
 
     // Load AQI Hotspots
-    loadAQIHotspots();
+    loadAQIHotspots('cit-aqi-hotspots-list');
 }
 
 function getColorForAQI(aqi) {
@@ -563,15 +563,27 @@ function getColorForAQI(aqi) {
 }
 
 // 6. AQI HOTSPOTS
+// 6. AQI HOTSPOTS
 async function loadAQIHotspots(containerId = 'aqi-hotspots-list') {
     try {
+        // 1. Try fetching Real Stations first
         const res = await fetch(`${API_BASE}/get_stations`);
-        const stations = await res.json();
+        let stations = await res.json();
+        let useSimulated = false;
 
-        // Filter stations that have AQI/Pollutant data
-        const withData = stations.filter(s => s.aqi || s.co2_estimated);
+        // 2. Fallback to Simulated Epidemiology Data if no stations
+        if (!stations || stations.length === 0) {
+            console.log("No real AQI stations found, falling back to simulated data.");
+            const resSim = await fetch(`${API_BASE}/health/epidemiology/`);
+            stations = await resSim.json();
+            useSimulated = true;
+        }
 
-        // Sort by AQI descending
+        // 3. Filter and Normalize
+        // Real data has 'aqi', Simulated has 'aqi' (but checks generic structure)
+        const withData = stations.filter(s => s.aqi !== undefined || s.co2_estimated !== undefined);
+
+        // 4. Sort by AQI descending
         withData.sort((a, b) => {
             let vA = parseFloat(a.aqi) || 0;
             let vB = parseFloat(b.aqi) || 0;
@@ -579,37 +591,45 @@ async function loadAQIHotspots(containerId = 'aqi-hotspots-list') {
         });
 
         const top5 = withData.slice(0, 5);
-
         const listElem = document.getElementById(containerId);
         if (!listElem) return;
 
         if (top5.length === 0) {
-            listElem.innerHTML = '<div style="padding:1rem;color:#666;">No real-time AQI data available.</div>';
+            listElem.innerHTML = '<div style="padding:1rem;color:#666;">No AQI data available.</div>';
             return;
         }
 
         listElem.innerHTML = top5.map(s => {
-            let val = parseFloat(s.aqi) || 0;
-            let cls = 'aqi-good';
-            if (val > 50) cls = 'aqi-satisfactory';
-            if (val > 100) cls = 'aqi-moderate';
-            if (val > 200) cls = 'aqi-poor';
-            if (val > 300) cls = 'aqi-very-poor';
-            if (val > 400) cls = 'aqi-severe';
+            // Normalize Fields (Real vs Simulated)
+            // Simulated uses 'zone_name', Real uses 'name'
+            // Simulated uses 'area_type', Real uses 'city'
+            const name = s.name || s.zone_name || 'Unknown Station';
+            const location = s.city || s.area_type || 'Sector Zone';
+            const timeStr = s.live_ts ? new Date(s.live_ts).toLocaleTimeString() : (useSimulated ? 'Simulated' : 'N/A');
+            const val = parseFloat(s.aqi) || 0;
 
+            // Click handler only for real stations (simulated don't have modal data usually, or we adapt)
+            const clickAttr = !useSimulated ? `onclick="openStationModal('${name}')"` : '';
+            const cursorStyle = !useSimulated ? 'cursor:pointer;' : '';
+
+            // EXACT MATCH with Health Monitor HTML
             return `
-            <div class="hotspot-item" onclick="openStationModal('${s.name}')">
+            <div style="padding:0.8rem; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; ${cursorStyle}" ${clickAttr}>
                 <div>
-                    <div style="font-weight:600;">${s.city}</div>
-                    <div style="font-size:0.8rem; color:#666;">${s.name}</div>
+                    <div style="font-weight:600; color:#334155;">${name}</div>
+                    <span class="badge" style="background:#e2e8f0; color:#475569; font-weight:500;">${location}</span>
                 </div>
-                <div class="badge ${cls}" style="font-size:0.9rem;">AQI ${val}</div>
-            </div>
-            `;
+                <div style="text-align:right;">
+                    <div style="font-size:1.1rem; font-weight:700; color:${getColorForAQI(val)}">${val} AQI</div>
+                    <div style="font-size:0.8rem; color:#64748b;">${timeStr}</div>
+                </div>
+            </div>`;
         }).join('');
 
-        // Store for modal lookup
-        window.allStations = stations;
+        // Store for modal lookup if real
+        if (!useSimulated) {
+            window.allStations = stations;
+        }
 
     } catch (e) { console.error("AQI Load Error", e); }
 }
@@ -1620,6 +1640,7 @@ async function loadUrbanData() {
     // 4. Weather (Update Dashboard Widget from Citizen API)
     fetchCitizenWeather().then(data => {
         if (data) {
+            if (document.getElementById('dash-weather-temp')) document.getElementById('dash-weather-temp').innerText = data.temp + "°C";
             if (document.getElementById('dash-weather-hum')) document.getElementById('dash-weather-hum').innerText = data.humidity + "%";
             if (document.getElementById('dash-weather-wind')) document.getElementById('dash-weather-wind').innerText = data.windSpeed + " km/h";
         }
