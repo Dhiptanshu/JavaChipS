@@ -6,13 +6,21 @@ Fresh Corridor Nexus integrates real-time environmental data, hospital capacity 
 
 ---
 
+## Latest Updates (Jan 2026)
+*   **Unified Cyber Theme**: Deep glassmorphism and neon accents across all tabs (Urban Nexus, Health, Agri, Citizen).
+*   **Urban Control Center (UCC)**: High-visibility simulation panel with dark-mode overlays and real-time impact analysis.
+*   **Aadhar Masking**: Enhanced data privacy with standardized `**** **** 1234` formatting and direct backend integration.
+*   **Performance Optimization**: Optimized CesiumJS memory usage and refined responsive layout for the profile header.
+
+---
+
 ## Features
 
-*   **Urban Digital Twin**: High-fidelity 3D map (CesiumJS) with interactive City Zones.
-*   **What-If Simulations**: Test disaster scenarios (Floods, Traffic Spikes) and predict impacts on city infrastructure.
-*   **Real-Time Traffic**: Live congestion tracking with "FlyTo" navigation and notifications.
-*   **Health Monitor**: Live tracking of ICU bed availability and Air Quality (AQI) hotspots.
-*   **Agri-Logistics**: Farm-to-City supply chain visibility with AI-driven spoilage risk assessment.
+*   **Urban Digital Twin**: High-fidelity 3D map (CesiumJS) with interactive City Zones and Urban Control Center overlay.
+*   **What-If Simulations**: Test disaster scenarios (Floods, Heatwaves, Storms) and predict impacts on city infrastructure.
+*   **Real-Time Traffic**: Live congestion tracking with "FlyTo" navigation and route traffic analysis.
+*   **Health Monitor**: Live tracking of ICU bed availability, pandemic surge simulations, and AQI hotspots.
+*   **Agri-Logistics**: Farm-to-City supply chain visibility with Blockchain-backed validation (mints on Sepolia).
 
 ---
 
@@ -20,111 +28,70 @@ Fresh Corridor Nexus integrates real-time environmental data, hospital capacity 
 
 *   **Backend**: Django 5.0, Django REST Framework (DRF)
 *   **Frontend**: HTML5, Vanilla JavaScript, CSS3
-*   **Geospatial**: CesiumJS (1.113)
-*   **Data Sources**: Central Pollution Control Board (CPCB), TomTom Traffic API
+*   **Blockchain**: Web3.py (Ethereum Interaction)
+*   **Geospatial**: CesiumJS (1.113), Cesiumpy
+*   **Data Sources**: Central Pollution Control Board (CPCB), TomTom API
+
+---
+
+## Database Migrations Reference
+
+The system utilizes a complex schema across multiple modules. Below are the key migration tracks:
+
+### Core Backend (`core` app)
+| Seq | Migration Name | Key Change |
+|-----|----------------|------------|
+| 0001 | `initial` | Base models for Zones, Weather, and Hospitals |
+| 0002 | `cityzone_average_income...` | Socio-economic metric tracking |
+| 0003 | `cityzone_area_type` | Zone classification for simulations |
+| 0004 | `hospital_is_live_data...` | Real-time hospital metrics toggle |
+| 0006 | `realtimetraffic` | Integration for TomTom live feeds |
+| 0007 | `userprofile` | Extended User model for Roles |
+| 0008 | `userprofile_aadhar...` | Aadhar number integration with masking logic |
+| 0009 | `citizenreport...` | Citizen Connect reporting system with Lat/Long |
+
+### Agri Validator (`agri_supply` app)
+| Seq | Migration Name | Key Change |
+|-----|----------------|------------|
+| 0001 | `initial` | Models for Verifiable Farm Shipments |
 
 ---
 
 ## Quick Start Guide
 
-Follow these steps to get the system running locally.
-
-### 1. Prerequisites
-*   Python 3.10+ installed.
-*   Git installed.
-
-### 2. Setup Project
+### 1. Setup Project
 ```bash
-# Clone the repository
 git clone <repository_url>
 cd fresh_corridor_backend
-
-# Create a virtual environment
 python -m venv venv
-# Windows:
-.\venv\Scripts\activate
-# Mac/Linux:
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-```bash
+.\venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 ```
 
-### 4. Configure Environment Variables
-Create a `.env` file in the `fresh_corridor_backend` directory (example below):
+### 2. Configure Environment Variables (.env)
 ```ini
 TOMTOM_API_KEY=your_tomtom_api_key
+ETH_PRIVATE_KEY=your_wallet_key
+INFURA_PROJECT_ID=your_infura_id
 DEBUG=True
-SECRET_KEY=your_django_secret_key
 ```
 
-### 5. Initialize Database
+### 3. Run Servers
+**Main Engine (Port 8000):**
 ```bash
-# Apply migrations
-python manage.py migrate
-
-# Seed data (Required for demo visuals)
-python seed_data.py
-```
-
-### 6. Run Server
-```bash
-# Start the Django server
 python manage.py runserver
 ```
-The dashboard is now live at: **[http://127.0.0.1:8000/](http://127.0.0.1:8000/)**
+
+**Agri-Validator (Port 8001):**
+```bash
+cd agri
+python manage.py runserver 8001
+```
 
 ---
 
-
----
-
-## 🚜 Agri-Logistic Validator (Blockchain Module)
-
-A standalone Django service simulating the "Mandi (Market) Gatekeeper" application. It validates incoming shipments and mints them on the Sepolia Blockchain for transparency.
-
-### Features
-*   **Gatekeeper Form**: Submit Farmer Name, Crop, Quantity, and Proof (Image).
-*   **Blockchain Verification**: Mints a transaction on the **Sepolia Testnet**.
-*   **Live Market API**: Exposes real-time price trends and stock levels to the main dashboard.
-
-### **Running the Validator**
-*The validator runs as a separate service on Port 8001.*
-
-1.  Open a **New Terminal**.
-2.  Navigate to the `agri` directory:
-    ```bash
-    cd agri
-    ```
-3.  Start the Server:
-    ```bash
-    python manage.py runserver 8001
-    ```
-4.  Access the Validator Dashboard: **[http://127.0.0.1:8001/](http://127.0.0.1:8001/)**
-
-*Once running, the Main App (Port 8000) will automatically sync and display "Verified" batches in the Agri-Logistics tab.*
-
----
-
-## Error Handling
-
-*   **Map Rendering**: If the map is black, ensure you have an active internet connection as CesiumJS streams global data.
-*   **Traffic Data**: If the TomTom API returns an error or rate-limit, the system automatically falls back to **Simulation Mode** to ensure the UI remains interactive.
-*   **Database**: If zones do not appear, ensure `seed_data.py` was executed successfully.
-
----
-
-## Security Declaration
-
-This repository contains **no hardcoded secrets**. All sensitive configurations (API keys, Secret keys) are managed via a `.env` file which is explicitly ignored by the `.gitignore` policy.
-
----
-
-## Background Worker
-
-To simulate real-time updates for health and environmental metrics during a demo:
+## Background Services
+To keep the dashboard "alive" with simulated data:
 ```bash
 python manage.py simulate_health
 ```
